@@ -1,0 +1,36 @@
+.section_Comment{
+    margin: 20px auto;
+    height: 29vh;
+    width: 90%;
+    background: #0fff99;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.section_Comment section{
+    width: 15%;
+    height: 25vh;
+    border: 2px solid #eee;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.section_FComment, .section_NComment{
+    margin: 20px auto;
+    height: 29vh;
+    width: 50%;
+    background: #0fff99;
+    border-radius: 15px;
+}
+:is(.section_FComment, .section_NComment) section{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+:is(.section_FComment, .section_NComment) section article{
+    margin: 10px 0;
+}
