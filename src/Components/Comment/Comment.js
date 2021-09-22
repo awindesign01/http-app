@@ -1,8 +1,8 @@
-const Comment = () => {
+const Comment = ({name, email, onClick}) => {
     return ( 
-        <section>
-            <h3>Name : </h3>
-            <p>email : </p>
+        <section onClick={onClick}>
+            <h3>Name : {name}</h3>
+            <p>email : {email}</p>
         </section>
      );
 }
