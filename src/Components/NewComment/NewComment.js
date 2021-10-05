@@ -1,7 +1,9 @@
 // import axios from "axios";
 import { useState } from "react";
+import { GetURL } from "../../Services/GetURL";
+import { PostURL } from "../../Services/PostURL";
 
-const NewComment = ({onAddPost}) => {
+const NewComment = ({ setComments }) => {
 	const [Comment, setComment] = useState({
 		name: "",
 		email: "",
@@ -11,6 +13,39 @@ const NewComment = ({onAddPost}) => {
 	const contentHandler = (e) => {
 		setComment({ ...Comment, [e.target.name]: e.target.value });
 	};
+
+	// const postCommentHandler = () => {
+		// post(api Link, body, header)
+		// api link : 👍
+		// body : data(name: "", email: "", content: "",)
+		// header : token(کد ملی دیجیتالی برای شناسایی اجزای کد ها) => JWT(Json Web Token)
+
+		// axios
+		// 	.post("http://localhost:3001/comments", {
+		// 		...Comment,
+		// 		postID: 10,
+		// 	})
+		// 	.then((res) => axios.get("http://localhost:3001/comments"))
+		// 	.then((res) => setComments(res.data))
+		// 	.catch();
+	// }
+	// روش اول با then, catch
+
+	const postCommentHandler = async () => {
+		// post(api Link, body, header)
+		// api link : 👍
+		// body : data(name: "", email: "", content: "",)
+		// header : token(کد ملی دیجیتالی برای شناسایی اجزای کد ها) => JWT(Json Web Token)
+		try {
+			await PostURL({
+				...Comment,
+				postID: 10,
+			});
+			const { data } = await GetURL();
+			setComments(data);
+		} catch (error) {}
+	};
+	// روش دوم try, catch
 
 	return (
 		<section>
@@ -32,7 +67,7 @@ const NewComment = ({onAddPost}) => {
 				></textarea>
 			</article>
 			<article>
-				<button onClick={() => onAddPost(Comment)}>Add Comment</button>
+				<button onClick={postCommentHandler}>Add Comment</button>
 			</article>
 		</section>
 	);

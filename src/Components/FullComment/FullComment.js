@@ -1,24 +1,37 @@
-import axios from "axios";
+// import axios from "axios";
 import { useEffect, useState } from "react";
+import { DeleteURL } from "../../Services/DeleteURL";
+import { GeyDataURL } from "../../Services/GetDataURL";
+import {GetURL} from "../../Services/GetURL";
 
-const FullComment = ({ commentID }) => {
+const FullComment = ({ commentID, setComments, setSelectedID }) => {
 	// console.log(commentID);
 	const [Comment, setComment] = useState(null);
 	useEffect(() => {
 		if (commentID) {
-			axios
-				.get(`http://localhost:3001/comments/${commentID}`)
-				.then((res) => setComment(res.data))
+				GeyDataURL(commentID).then((res) => setComment(res.data))
 				.catch();
 		}
 	}, [commentID]);
 
-	const deleteHandler = () => {
-		axios
-			.delete(`http://localhost:3001/comments/${commentID}`)
-			.then((res) => console.log(res))
-			.catch();
+	// const deleteHandler = () => {
+	// 	axios
+	// 		.delete(`http://localhost:3001/comments/${commentID}`)
+	// 		.then((res) => console.log(res))
+	// 		.catch((err) => console.log(err));
+	// };
+	// روش اول با then, catch
+
+	const deleteHandler = async () => {
+		try {
+			await DeleteURL(commentID);
+			const { data } = await GetURL();
+			setComments(data);
+			setSelectedID(null);
+			setComment(null);
+		} catch (error) {}
 	};
+	// روش دوم try, catch
 
 	const styleP = {
 		display: "flex",

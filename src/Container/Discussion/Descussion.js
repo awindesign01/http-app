@@ -3,13 +3,15 @@ import FullComment from "../../Components/FullComment/FullComment";
 import NewComment from "../../Components/NewComment/NewComment";
 import Style from "./Descussion.module.css";
 import { useEffect, useState } from "react";
-import axios from "axios";
+// import axios from "axios";
+import { toast } from "react-toastify";
+import { GetURL } from "../../Services/GetURL";
 
 const Descussion = () => {
 	const [Comments, setComments] = useState(null);
 	const [SelectedID, setSelectedID] = useState(null);
-	const [Errorr, setErrorr] = useState(fulse)
-	
+	const [Errorr, setErrorr] = useState(false);
+
 	useEffect(() => {
 		// then, catch
 		// axios
@@ -21,9 +23,7 @@ const Descussion = () => {
 		const getComments = async () => {
 			// async, await => (try, catch)
 			try {
-				const { data } = await axios.get(
-					"http://localhost:3001/comments"
-				);
+				const { data } = await GetURL();
 				setComments(data.slice(0, 4));
 			} catch (error) {
 				console.log(error);
@@ -39,42 +39,45 @@ const Descussion = () => {
 		setSelectedID(id);
 	};
 
-	const postCommentHandler = () => {
-		// post(api Link, body, header)
-		// api link : 👍
-		// body : data(name: "", email: "", content: "",)
-		// header : token(کد ملی دیجیتالی برای شناسایی اجزای کد ها) => JWT(Json Web Token)
-		axios
-			.post("http://localhost:3001/comments", {
-				...Comment,
-				postID: 10,
-			})
-			.then((res) => axios.get("http://localhost:3001/comments"))
-			.then((res) => setComments(res.data))
-			.catch();
-	};
+	const renderComments = () => {
+		let renderedValue = <p>loading 🤔🤔🤔</p>;
+		if (Errorr) {
+			renderedValue = <p>fetching data failed !</p>;
+			toast.error("💀 error", {
+				position: "top-right",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+			});
+		}
 
+		if (Comments && !Errorr) {
+			renderedValue = Comments.map((c) => (
+				<Comment
+					key={c.id}
+					name={c.name}
+					email={c.email}
+					onClick={() => selectCommentHandler(c.id)}
+				/>
+			));
+		}
+		return renderedValue;
+	};
 	return (
 		<main>
-			<section className={Style.section_Comment}>
-				{Comments ? (
-					Comments.map((c) => (
-						<Comment
-							key={c.id}
-							name={c.name}
-							email={c.email}
-							onClick={() => selectCommentHandler(c.id)}
-						/>
-					))
-				) : (
-					<p>loading 🤔🤔🤔</p>
-				)}
-			</section>
+			<section className={Style.section_Comment}>{renderComments()}</section>
 			<section className={Style.section_FComment}>
-				<FullComment commentID={SelectedID} />
+				<FullComment
+					commentID={SelectedID}
+					setComments={setComments}
+					setSelectedID={setSelectedID}
+				/>
 			</section>
 			<section className={Style.section_NComment}>
-				<NewComment onAddPost={postCommentHandler}/>
+				<NewComment setComments={setComments} />
 			</section>
 		</main>
 	);
